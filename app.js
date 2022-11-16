@@ -7,6 +7,8 @@ const popoverList = [...popoverTriggerList].map(
 let answer = "abcde";
 let input = document.querySelector(".input");
 let keyboard = document.querySelector(".key-container");
+let checking = false;
+let currentTile = 1;
 
 const keys = [
   "Q",
@@ -41,11 +43,12 @@ const keys = [
 let currentWord = [];
 
 // input container 그리기
-for (let i = 0; i < 30; i++) {
+for (let i = 1; i <= 30; i++) {
   let square = document.createElement("input");
   square.setAttribute("type", "text");
   square.setAttribute("maxlength", "1");
   square.setAttribute("class", "square");
+  square.setAttribute("id", i);
   if (i === 0) {
     square.setAttribute("autofocus", "true");
   }
@@ -56,17 +59,35 @@ for (let i = 0; i < 30; i++) {
 keys.forEach((key) => {
   const buttonElement = document.createElement("button");
   buttonElement.classList.add("key");
-  buttonElement.setAttribute('id', key);
-  buttonElement.addEventListener("click", handleClick);
+  buttonElement.setAttribute("id", key);
+  buttonElement.addEventListener("click", () => handleClick(key));
   buttonElement.textContent = key;
-  
+
   keyboard.appendChild(buttonElement);
 });
 
-function handleClick(e) {
-  console.log(e.target.textContent);
+function handleClick(key) {
+  console.log(key);
+  currentWord.push(key);
+  const tile = document.getElementById(currentTile);
+  tile.classList.add("active");
+
+  if (key === "Enter") {
+    spellCheck(currentWord);
+  } else if (key === "Del") {
+    currentWord.pop();
+    currentTile--;
+    tile.value = "";
+    tile.classList.remove("active");
+  } else {
+    tile.value = key;
+    if (currentTile % 5 !== 0) {
+      currentTile++;
+    }
+  }
 }
 
+// 윈도우 실행시
 window.onload = function () {
   let squares = document.querySelectorAll(".square");
   inputGenerator(squares);
@@ -94,22 +115,27 @@ function inputGenerator(inputs) {
 
     // 뒤로가기 버튼 누를시
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace") {
-        if (input.value === "" && currentWord.length % 5 !== 0) {
-          currentWord.pop();
-          input.previousElementSibling.focus();
-          input.previousElementSibling.classList.remove("active");
-        } else if (input.value !== "" && currentWord.length % 5 === 0) {
-          currentWord.pop();
-          input.value = "";
-          input.classList.remove("active");
-        }
-      }
-
-      // 엔터 누르면 단어 검사
-      if (e.key === "Enter") {
+      // checking 중일때는 뒤로가기 불가
+      if (checking) {
+        console.log("key blocked");
         e.preventDefault();
-        spellCheck(inputs);
+      } else {
+        if (e.key === "Backspace") {
+          if (input.value === "" && currentWord.length % 5 !== 0) {
+            currentWord.pop();
+            input.previousElementSibling.focus();
+            input.previousElementSibling.classList.remove("active");
+          } else if (input.value !== "" && currentWord.length % 5 === 0) {
+            currentWord.pop();
+            input.value = "";
+            input.classList.remove("active");
+          }
+        }
+
+        // 엔터 누르면 단어 검사
+        if (e.key === "Enter") {
+          spellCheck(inputs);
+        }
       }
     });
   });
@@ -148,6 +174,7 @@ function spellCheck(inputs) {
     // } else if (currentWord.join("") !== wordAPI) {
     //   alert("영단어를 입력해주세요");
   } else {
+    checking = true;
     // 영단어가 맞으면 검사
     inputs.forEach((input, i) => {
       if (input.value !== "") {
@@ -179,6 +206,7 @@ function spellCheck(inputs) {
           currentWord = [];
           // 1초 뒤 input focus 넘어감
           setTimeout(() => {
+            checking = false;
             input.nextElementSibling.focus();
           }, 1000);
         }
