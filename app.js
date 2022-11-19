@@ -91,6 +91,9 @@ keys.forEach((key) => {
   if (key === "enter") {
     buttonElement.classList.add("enter");
   }
+  if (key === "del") {
+    buttonElement.classList.add("del");
+  }
   buttonElement.setAttribute("id", key);
   buttonElement.addEventListener("click", () => handleClick(key));
   buttonElement.textContent = key;
@@ -137,7 +140,7 @@ function inputGenerator(inputs) {
     input.addEventListener("touchstart", (e) => {
       e.preventDefault();
     });
-    
+
     input.addEventListener("input", (e) => {
       console.log(currentWord);
       // 영문만 입력되도록 하기

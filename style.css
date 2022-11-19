@@ -151,7 +151,9 @@ button:active {
 .key.enter {
   width: 75px;
 }
-
+.key.del {
+  width: 65px;
+}
 /* keyboard responsive */
 @media screen and (max-width: 768px) {
   .key-container {
@@ -162,7 +164,7 @@ button:active {
     padding: 2px;
     margin: 2px;
     width: 33px;
-    height: 25px;
+    height: 40px;
     font-size: 0.8rem;
     display: flex;
     justify-content: center;
@@ -170,6 +172,9 @@ button:active {
   }
   .key.enter {
     width: 55px;
+  }
+  .key.del {
+    width: 45px;
   }
 }
 
