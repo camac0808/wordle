@@ -128,14 +128,14 @@ function handleClick(key) {
 
 // input generator
 function inputGenerator(inputs) {
-  let allKeys = document.querySelectorAll(".key");
-
-  onlyLetters(inputs);
+  // onlyLetters(inputs);
 
   // input 입력할때
   inputs.forEach((input, index) => {
     input.addEventListener("input", (e) => {
-      console.log("input");
+      console.log(input.value);
+      // 영문만 입력되도록 하기
+      input.value = input.value.replace(/[^a-zA-Z]/g, "");
       // input 안에 값이 있으면 class active 추가하고 focus를 다음 input으로 이동
       if (input.value !== "") {
         currentWord.push(input.value);
@@ -177,7 +177,7 @@ function inputGenerator(inputs) {
 // spelling check function, setTimeout을 사용해서 각각 애니메이션 나오게끔 만듬 index * 200
 function spellCheck(inputs) {
   // 영단어가 아니면 오류메세지를 띄운다
-
+  console.log(currentWord);
   const word = currentWord.join("");
 
   let correctAnswer = "";
@@ -230,17 +230,17 @@ function spellCheck(inputs) {
 }
 
 // only letters can be entered in the input
-function onlyLetters(inputs) {
-  inputs.forEach((input) => {
-    input.addEventListener("keydown", (e) => {
-      if (!/[a-z]/.test(e.key)) {
-        e.preventDefault();
-      } else {
-        return false;
-      }
-    });
-  });
-}
+// function onlyLetters(inputs) {
+//   inputs.forEach((input) => {
+//     input.addEventListener("keydown", (e) => {
+//       if (!/[a-z]/.test(e.key)) {
+//         e.preventDefault();
+//       } else {
+//         return false;
+//       }
+//     });
+//   });
+// }
 
 // 윈도우 실행시
 window.onload = function () {
