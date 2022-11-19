@@ -68,6 +68,11 @@ header {
   color: #393e4c;
 }
 
+/* square focus element */
+.square:focus {
+  border: 2px solid #6aaa64;
+}
+
 .square.active {
   border: 2px solid #a7adc0;
   animation: scale 0.3s ease;
@@ -106,7 +111,7 @@ header {
   flex-wrap: wrap;
   justify-content: center;
   width: 600px;
-  margin: 50px auto 0;
+  margin: 30px auto 0;
 }
 
 button {
@@ -150,11 +155,14 @@ button:active {
 /* keyboard responsive */
 @media screen and (max-width: 768px) {
   .key-container {
-    width: 450px;
+    width: 400px;
+    
   }
   button {
-    width: 37px;
-    height: 22px;
+    padding: 2px;
+    margin: 2px;
+    width: 33px;
+    height: 25px;
     font-size: 0.8rem;
     display: flex;
     justify-content: center;

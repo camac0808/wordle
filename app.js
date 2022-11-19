@@ -132,8 +132,14 @@ function inputGenerator(inputs) {
 
   // input 입력할때
   inputs.forEach((input, index) => {
+
+    // 모바일 자판 막기 
+    input.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+    });
+    
     input.addEventListener("input", (e) => {
-      console.log(input.value);
+      console.log(currentWord);
       // 영문만 입력되도록 하기
       input.value = input.value.replace(/[^a-zA-Z]/g, "");
       // input 안에 값이 있으면 class active 추가하고 focus를 다음 input으로 이동
