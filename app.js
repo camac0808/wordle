@@ -75,6 +75,7 @@ for (let i = 0; i < 30; i++) {
   square.setAttribute("type", "text");
   square.setAttribute("maxlength", "1");
   square.setAttribute("class", "square");
+  square.setAttribute("inputmode", "none");
   square.setAttribute("id", i);
   if (i === 0) {
     square.setAttribute("autofocus", "true");
@@ -103,12 +104,12 @@ keys.forEach((key) => {
 // keyboard click event
 function handleClick(key) {
   const tile = document.getElementById(currentTile);
+  console.log(currentTile);
 
   if (key === "enter") {
     spellCheck(squares);
   } else if (key === "del") {
-    if (tile.value !== "") {
-      currentWord.pop();
+    if (tile.value !== "" && currentWord.length < 5){
       tile.value = "";
       tile.classList.remove("active");
       if (currentTile < 0) {
@@ -135,12 +136,6 @@ function inputGenerator(inputs) {
 
   // input 입력할때
   inputs.forEach((input, index) => {
-
-    // 모바일 자판 막기 
-    input.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-    });
-
     input.addEventListener("input", (e) => {
       console.log(currentWord);
       // 영문만 입력되도록 하기
@@ -149,6 +144,7 @@ function inputGenerator(inputs) {
       if (input.value !== "") {
         currentWord.push(input.value);
         input.classList.add("active");
+        currentTile++;
         if (currentWord.length % 5 !== 0) {
           input.nextElementSibling.focus();
         }
@@ -167,10 +163,12 @@ function inputGenerator(inputs) {
             currentWord.pop();
             input.previousElementSibling.focus();
             input.previousElementSibling.classList.remove("active");
+            currentTile--;
           } else if (input.value !== "" && currentWord.length % 5 === 0) {
             currentWord.pop();
             input.value = "";
             input.classList.remove("active");
+            currentTile--;
           }
         }
 
@@ -230,9 +228,6 @@ function spellCheck(inputs) {
           setTimeout(() => {
             checking = false;
             input.nextElementSibling.focus();
-            input.addEventListener("touchstart", (e) => {
-              e.preventDefault();
-            });
           }, 1000);
         }
 
