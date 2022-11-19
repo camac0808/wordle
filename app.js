@@ -204,12 +204,18 @@ function spellCheck(inputs) {
           if (input.value === answer[i % 5]) {
             input.style.background = "#6aaa64";
             input.classList.add("flip");
+            document.getElementById(input.value).classList.add("flip");
+            document.getElementById(input.value).style.background = "#6aaa64";
           } else if (answer.includes(input.value)) {
             input.style.background = "#c9b458";
             input.classList.add("flip");
+            document.getElementById(input.value).classList.add("flip");
+            document.getElementById(input.value).style.background = "#c9b458";
           } else {
             input.style.background = "#787c7e";
             input.classList.add("flip");
+            document.getElementById(input.value).classList.add("flip");
+            document.getElementById(input.value).style.background = "#787c7e";
           }
         }, 100 * Math.ceil((i + 1) % 5 === 0 ? 5 : (i + 1) % 5));
 
@@ -226,6 +232,10 @@ function spellCheck(inputs) {
             input.nextElementSibling.focus();
           }, 1000);
         }
+
+        input.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+        });
       }
     });
 

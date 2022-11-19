@@ -155,7 +155,7 @@ button:active {
   width: 65px;
 }
 /* keyboard responsive */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 500px) {
   .key-container {
     width: 400px;
     
