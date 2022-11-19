@@ -75,7 +75,7 @@ for (let i = 0; i < 30; i++) {
   square.setAttribute("type", "text");
   square.setAttribute("maxlength", "1");
   square.setAttribute("class", "square");
-  square.setAttribute("inputmode", "none");
+  square.setAttribute("inputmode", "none"); // 모바일 자판 막기
   square.setAttribute("id", i);
   if (i === 0) {
     square.setAttribute("autofocus", "true");
