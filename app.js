@@ -230,12 +230,13 @@ function spellCheck(inputs) {
           setTimeout(() => {
             checking = false;
             input.nextElementSibling.focus();
+            input.addEventListener("touchstart", (e) => {
+              e.preventDefault();
+            });
           }, 1000);
         }
 
-        input.addEventListener("touchstart", (e) => {
-          e.preventDefault();
-        });
+        
       }
     });
 
