@@ -8,42 +8,69 @@ let answer = "abcde";
 let input = document.querySelector(".input");
 let keyboard = document.querySelector(".key-container");
 let checking = false;
-let currentTile = 1;
+let currentTile = 0;
+let existWord = [];
 
 const keys = [
-  "Q",
-  "W",
-  "E",
-  "R",
-  "T",
-  "Y",
-  "U",
-  "I",
-  "O",
-  "P",
-  "A",
-  "S",
-  "D",
-  "F",
-  "G",
-  "H",
-  "J",
-  "K",
-  "L",
-  "Del",
-  "Z",
-  "X",
-  "C",
-  "V",
-  "B",
-  "N",
-  "M",
-  "Enter",
+  "q",
+  "w",
+  "e",
+  "r",
+  "t",
+  "y",
+  "u",
+  "i",
+  "o",
+  "p",
+  "a",
+  "s",
+  "d",
+  "f",
+  "g",
+  "h",
+  "j",
+  "k",
+  "l",
+  "enter",
+  "z",
+  "x",
+  "c",
+  "v",
+  "b",
+  "n",
+  "m",
+  ,
+  "del",
 ];
 let currentWord = [];
 
-// input container 그리기
-for (let i = 1; i <= 30; i++) {
+// Word API fetch
+async function getWords() {
+  try {
+    const response = await fetch("https://random-word-api.herokuapp.com/word?length=5");
+    const data = await response.json();
+
+    // json배열을 문자열로 변환
+    answer = data.join("");
+    console.log(answer);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Check if the word exists
+async function saveExistWord() {
+  try {
+    const response = await fetch(`https://random-word-api.herokuapp.com/all`);
+    const data = await response.json();
+    existWord = data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// square container 그리기
+for (let i = 0; i < 30; i++) {
   let square = document.createElement("input");
   square.setAttribute("type", "text");
   square.setAttribute("maxlength", "1");
@@ -55,43 +82,49 @@ for (let i = 1; i <= 30; i++) {
   input.appendChild(square);
 }
 
+let squares = document.querySelectorAll(".square");
+
 // keyboard
 keys.forEach((key) => {
   const buttonElement = document.createElement("button");
   buttonElement.classList.add("key");
+  if (key === "enter") {
+    buttonElement.classList.add("enter");
+  }
   buttonElement.setAttribute("id", key);
   buttonElement.addEventListener("click", () => handleClick(key));
   buttonElement.textContent = key;
-
   keyboard.appendChild(buttonElement);
 });
 
+// keyboard click event
 function handleClick(key) {
-  console.log(key);
-  currentWord.push(key);
   const tile = document.getElementById(currentTile);
-  tile.classList.add("active");
 
-  if (key === "Enter") {
-    spellCheck(currentWord);
-  } else if (key === "Del") {
-    currentWord.pop();
-    currentTile--;
-    tile.value = "";
-    tile.classList.remove("active");
-  } else {
-    tile.value = key;
-    if (currentTile % 5 !== 0) {
-      currentTile++;
+  if (key === "enter") {
+    spellCheck(squares);
+  } else if (key === "del") {
+    if (tile.value !== "") {
+      currentWord.pop();
+      tile.value = "";
+      tile.classList.remove("active");
+      if (currentTile < 0) {
+        currentTile = 0;
+      }
+    } else if (tile.value === "" && currentWord.length > 0) {
+      tile.previousElementSibling.classList.remove("active");
+      tile.previousElementSibling.value = "";
+      currentTile--;
+      currentWord.pop();
     }
+  } else if (currentWord.length === 0 || currentWord.length % 5 !== 0) {
+    currentWord.push(key);
+    tile.value = key;
+    tile.classList.add("active");
+    currentTile++;
   }
+  console.log(key, currentTile, currentWord);
 }
-
-// 윈도우 실행시
-window.onload = function () {
-  let squares = document.querySelectorAll(".square");
-  inputGenerator(squares);
-};
 
 // input generator
 function inputGenerator(inputs) {
@@ -139,47 +172,27 @@ function inputGenerator(inputs) {
       }
     });
   });
-
-  // TODO:keyboard event 설정
-  // allKeys.forEach((key) => {
-  //   key.addEventListener("click", (e) => {
-  //     console.log(e.target.textContent);
-  //     document.activeElement = e.target.textContent;
-  //     document.activeElement.nextElementSibling.focus();
-  //   });
-  //   if (key.classList.contains === "enter") {
-  //     key.addEventListener("click", (e) => {
-  //       spellCheck(inputs);
-  //     });
-  //   }
-  // });
 }
 
 // spelling check function, setTimeout을 사용해서 각각 애니메이션 나오게끔 만듬 index * 200
 function spellCheck(inputs) {
   // 영단어가 아니면 오류메세지를 띄운다
-  let word = [];
-  inputs.forEach((input) => {
-    word.push(input.value);
-  });
-  console.log(currentWord);
-  //TODO: word api를 사용해서 영단어가 맞는지 확인
-  // if (word.join("") !== wordAPI) {
-  //   alert("영단어를 입력해주세요");
-  //   return;
-  // }
+
+  const word = currentWord.join("");
+
+  let correctAnswer = "";
 
   if (currentWord.length % 5 !== 0) {
     alert("5글자를 채워주세요");
-    // } else if (currentWord.join("") !== wordAPI) {
-    //   alert("영단어를 입력해주세요");
+  } else if (!existWord.includes(word)) {
+    alert("영단어가 아닙니다");
   } else {
     checking = true;
     // 영단어가 맞으면 검사
     inputs.forEach((input, i) => {
       if (input.value !== "") {
         setTimeout(() => {
-          if (input.value === answer[i]) {
+          if (input.value === answer[i % 5]) {
             input.style.background = "#6aaa64";
             input.classList.add("flip");
           } else if (answer.includes(input.value)) {
@@ -192,16 +205,10 @@ function spellCheck(inputs) {
         }, 100 * Math.ceil((i + 1) % 5 === 0 ? 5 : (i + 1) % 5));
 
         // 정답을 맞출 경우 / 못맞출경우
-        if (currentWord.join("") === answer) {
-          setTimeout(() => {
-            alert("정답입니다!");
-            location.reload();
-          }, 1000);
-        } else if (currentWord.join("") !== answer && i === 29) {
-          setTimeout(() => {
-            alert(`오답입니다!, 정답은 ${answer} 입니다`);
-            location.reload();
-          }, 1000);
+        if (word === answer) {
+          correctAnswer = `정답입니다! ${answer}`;
+        } else if (word !== answer && i === 29) {
+          correctAnswer = `오답입니다! 정답은 ${answer} 입니다.`;
         } else {
           currentWord = [];
           // 1초 뒤 input focus 넘어감
@@ -212,6 +219,13 @@ function spellCheck(inputs) {
         }
       }
     });
+
+    if (correctAnswer) {
+      setTimeout(() => {
+        alert(correctAnswer);
+        window.location.reload();
+      }, 1000);
+    }
   }
 }
 
@@ -227,3 +241,10 @@ function onlyLetters(inputs) {
     });
   });
 }
+
+// 윈도우 실행시
+window.onload = function () {
+  getWords();
+  saveExistWord();
+  inputGenerator(squares);
+};

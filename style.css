@@ -139,8 +139,12 @@ button:active {
   }
 }
 
+.key {
+  text-transform: uppercase;
+}
+
 .key.enter {
-  width: 70px;
+  width: 75px;
 }
 
 /* keyboard responsive */
